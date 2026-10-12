@@ -1,0 +1,63 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="attrs" />
+          <option value="certifi" />
+          <option value="charset-normalizer" />
+          <option value="coloredlogs" />
+          <option value="EasyProcess" />
+          <option value="entrypoint2" />
+          <option value="flatbuffers" />
+          <option value="humanfriendly" />
+          <option value="idna" />
+          <option value="imageio" />
+          <option value="jsonschema" />
+          <option value="jsonschema-specifications" />
+          <option value="keyboard" />
+          <option value="lazy_loader" />
+          <option value="llvmlite" />
+          <option value="MouseInfo" />
+          <option value="mpmath" />
+          <option value="mss" />
+          <option value="networkx" />
+          <option value="numba" />
+          <option value="numpy" />
+          <option value="onnxruntime" />
+          <option value="opencv-python-headless" />
+          <option value="pandas" />
+          <option value="Pillow" />
+          <option value="pooch" />
+          <option value="protobuf" />
+          <option value="PyAutoGUI" />
+          <option value="pygame" />
+          <option value="PyGetWindow" />
+          <option value="PyMatting" />
+          <option value="PyMsgBox" />
+          <option value="pyperclip" />
+          <option value="pyreadline3" />
+          <option value="PyRect" />
+          <option value="pyscreenshot" />
+          <option value="PyScreeze" />
+          <option value="python-dateutil" />
+          <option value="pytweening" />
+          <option value="pytz" />
+          <option value="referencing" />
+          <option value="rembg" />
+          <option value="requests" />
+          <option value="rpds-py" />
+          <option value="scikit-image" />
+          <option value="scipy" />
+          <option value="six" />
+          <option value="sympy" />
+          <option value="tifffile" />
+          <option value="tqdm" />
+          <option value="tzdata" />
+          <option value="urllib3" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
