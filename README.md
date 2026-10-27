@@ -5,19 +5,6 @@ EloLifts is a web-app that allows users to track lifts, giving them a competitiv
 1. Download Requirements
 2. Run app.py to update server, link will be provided in console
 
-## Lift logging API
-
-The backend provides `POST /api/users/<user_id>/lifts` to record a set and
-`GET /api/users/<user_id>/lifts` to retrieve that user's most recent 100 sets.
-The POST body is JSON:
-Example:
-```json
-{
-  "exercise": "squat",
-  "weight": 100,
-  "reps": 5
-}
-```
 # To test the logging API:
 1. Run app.py to start the server:
 2. Submit a lift at "<serverURL>/log". This will write data to the database specified in `DATABASE_URL`. 
