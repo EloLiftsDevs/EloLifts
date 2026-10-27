@@ -7,7 +7,7 @@ EloLifts is a web-app that allows users to track lifts, giving them a competitiv
 
 # To test the logging API:
 1. Run app.py to start the server:
-2. Submit a lift at "<serverURL>/log". This will write data to the database specified in `DATABASE_URL`. 
+2. Submit a lift at "'serverURL'/log". This will write data to the database specified in `DATABASE_URL`. 
 
 ----
 
