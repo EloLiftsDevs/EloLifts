@@ -6,6 +6,11 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 
+#josiah
+from dotenv import load_dotenv
+load_dotenv()
+#josiah
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "DATABASE_URL", "sqlite:///elolifts.db"
