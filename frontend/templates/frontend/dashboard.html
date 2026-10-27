@@ -1,0 +1,36 @@
+{% extends "frontend/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Welcome back, {{ user.username }}</h1>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <p class="text-secondary mb-1">Overall rank</p>
+    <p class="h2 mb-2">{{ user.rank }} <span class="badge text-bg-secondary fs-6 align-middle">#{{ rank.position }}</span></p>
+    <div class="progress mb-1" role="progressbar" aria-label="Progress to {{ rank.next_rank }}"
+         aria-valuenow="{{ rank.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar" style="width: {{ rank.progress_pct }}%"></div>
+    </div>
+    <small class="text-secondary">{{ rank.progress_pct }}% of the way to {{ rank.next_rank }}</small>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h2 class="h5 mb-0">Recent lifts</h2>
+  <a class="btn btn-primary" href="{{ url_for('frontend.log_lift') }}">Log a lift</a>
+</div>
+{% if lifts %}
+<div class="table-responsive">
+  <table class="table bg-white">
+    <thead><tr><th>Date</th><th>Exercise</th><th>Weight</th><th>Reps</th></tr></thead>
+    <tbody>
+      {% for lift in lifts %}
+      <tr><td>{{ lift.logged_at }}</td><td>{{ lift.exercise_name }}</td><td>{{ lift.weight_lb }} lb</td><td>{{ lift.reps }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-secondary">No lifts yet. Log your first one!</p>
+{% endif %}
+{% endblock %}
