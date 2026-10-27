@@ -19,15 +19,8 @@ Example:
 }
 ```
 # To test the logging API:
-1. Open PowerShell in the project folder and start the server:
-2. Submit a lift (example): 
-```
-Invoke-RestMethod -Method Post `
-  -Uri http://127.0.0.1:5000/api/users/1/lifts `
-  -ContentType "application/json" `
-  -Body '{"exercise":"squat","weight":100,"reps":5}'
-```
-
+1. Run app.py to start the server:
+2. Submit a lift at "<serverURL>/log". This will write data to the database specified in `DATABASE_URL`. 
 
 ----
 

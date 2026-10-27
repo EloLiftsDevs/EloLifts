@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "DATABASE_URL", "sqlite:///elolifts.db"
 )
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///elolifts.db"
 
 db = SQLAlchemy(app)
 
@@ -142,6 +142,9 @@ def serialize_lift(lift):
         "created_at": created_at.isoformat(),
     }
 
+
+from frontend import bp as frontend_bp
+app.register_blueprint(frontend_bp)
 
 if __name__ == "__main__":
     with app.app_context():
