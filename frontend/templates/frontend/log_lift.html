@@ -4,8 +4,7 @@
 <div class="card mx-auto" style="max-width: 480px">
   <div class="card-body p-4">
     <h1 class="h3 mb-3">Log a lift</h1>
-    <div id="lift-status" class="alert d-none" role="status"></div>
-    <form method="post" id="lift-form" data-user-id="1">
+    <form method="post">
       <div class="mb-3">
         <label for="exercise" class="form-label">Exercise</label>
         <select id="exercise" name="exercise_id" class="form-select" required>
@@ -26,45 +25,4 @@
     </form>
   </div>
 </div>
-<script>
-  // Posts the form to the lift logging API (POST /api/users/<id>/lifts).
-  const form = document.getElementById("lift-form");
-  const status = document.getElementById("lift-status");
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const select = document.getElementById("exercise");
-    const button = form.querySelector("button");
-    const body = {
-      exercise: select.options[select.selectedIndex].text,
-      weight: Number(document.getElementById("weight").value),
-      reps: parseInt(document.getElementById("reps").value, 10),
-    };
-
-    button.disabled = true;
-    try {
-      const res = await fetch(`/api/users/${form.dataset.userId}/lifts`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        show("alert-success", `Saved: ${data.lift.exercise} ${data.lift.weight} lb x ${data.lift.reps}`);
-        form.reset();
-      } else {
-        show("alert-danger", data.error || "Could not save lift.");
-      }
-    } catch (err) {
-      show("alert-danger", "Could not reach the server.");
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  function show(cls, text) {
-    status.className = `alert ${cls}`;
-    status.textContent = text;
-  }
-</script>
 {% endblock %}

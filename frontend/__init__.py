@@ -1,24 +1,22 @@
 #Elo Lifts frontend pages (Sprint 1, basic version)
 
-#Placeholder data
-#Field names follow tables in schema.sql (users, exercises, lift_logs) so can be replaced with real data later
+#Users, exercises and lifts come from the database (see models.py)
+#Ranks and the leaderboard are still placeholder data until the rank system exists
 
-from flask import Blueprint, redirect, render_template, request, url_for
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
+
+from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
+
+from models import Exercise, LiftLog, User, db
 
 bp = Blueprint("frontend", __name__, template_folder="templates")
 
-# users table: user_id, username, email, role, rank
-FAKE_USER = {"user_id": 1, "username": "demo_lifter", "email": "demo@example.com",
-             "role": "user", "rank": "Gold II"}
-
-# exercises table: exercise_id, exercise_name
-FAKE_EXERCISES = [
-    {"exercise_id": 1, "exercise_name": "Back Squat"},
-    {"exercise_id": 2, "exercise_name": "Bench Press"},
-    {"exercise_id": 3, "exercise_name": "Deadlift"},
-    {"exercise_id": 4, "exercise_name": "Overhead Press"},
-    {"exercise_id": 5, "exercise_name": "Barbell Row"},
-]
+#No login yet, so every page acts as this user
+#backend hookup - replace with the logged-in user once authentication is added
+CURRENT_USER_ID = 1
 
 # not in the schema yet and by the rank system later
 FAKE_RANK = {
@@ -30,13 +28,6 @@ FAKE_RANK = {
     ],
 }
 
-# lift_logs joined with exercises: exercise_name, weight_lb, reps, logged_at
-FAKE_RECENT_LIFTS = [
-    {"logged_at": "Oct 12", "exercise_name": "Back Squat", "weight_lb": 255, "reps": 3},
-    {"logged_at": "Oct 12", "exercise_name": "Bench Press", "weight_lb": 155, "reps": 6},
-    {"logged_at": "Oct 10", "exercise_name": "Deadlift", "weight_lb": 275, "reps": 5},
-]
-
 FAKE_LEADERBOARD = [
     {"position": 1, "username": "jgarcia_lifts", "rank": "Elite III", "best_lb": 315},
     {"position": 2, "username": "carsonc", "rank": "Elite I", "best_lb": 295},
@@ -44,6 +35,10 @@ FAKE_LEADERBOARD = [
     {"position": 4, "username": "josiah_w", "rank": "Platinum III", "best_lb": 255},
     {"position": 14, "username": "demo_lifter", "rank": "Silver II", "best_lb": 185},
 ]
+
+
+def get_current_user():
+    return db.get_or_404(User, CURRENT_USER_ID)
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -72,25 +67,82 @@ def logout():
 
 @bp.route("/dashboard")
 def dashboard():
-    return render_template("frontend/dashboard.html", user=FAKE_USER,
-                           rank=FAKE_RANK, lifts=FAKE_RECENT_LIFTS)
+    user = get_current_user()
+    lifts = (
+        LiftLog.query.options(joinedload(LiftLog.exercise))
+        .filter_by(user_id=user.user_id)
+        .order_by(LiftLog.logged_at.desc(), LiftLog.log_id.desc())
+        .limit(10)
+        .all()
+    )
+    recent_lifts = [
+        {"logged_at": format_date(lift.logged_at), "exercise_name": lift.exercise.exercise_name,
+         "weight_lb": lift.weight_lb, "reps": lift.reps}
+        for lift in lifts
+    ]
+    return render_template("frontend/dashboard.html", user=user,
+                           rank=FAKE_RANK, lifts=recent_lifts)
 
 
 @bp.route("/log", methods=["GET", "POST"])
 def log_lift():
+    user = get_current_user()
     message = None
+    status = 200
     if request.method == "POST":
-        # Form sends exercise_id, weight_lb and reps (matching lift_logs)
-        # backend hookup - save the lift here, then redirect to the dashboard
-        message = "Saving lifts isn't connected to the backend yet."
-    return render_template("frontend/log_lift.html", exercises=FAKE_EXERCISES, message=message)
+        message, status = save_lift(user, request.form)
+        if message is None:
+            return redirect(url_for("frontend.dashboard"))
+    exercises = Exercise.query.order_by(Exercise.exercise_name).all()
+    return render_template("frontend/log_lift.html", exercises=exercises, message=message), status
 
 
 @bp.route("/leaderboard")
 def leaderboard():
-    return render_template("frontend/leaderboard.html", rows=FAKE_LEADERBOARD, user=FAKE_USER)
+    return render_template("frontend/leaderboard.html", rows=FAKE_LEADERBOARD, user=get_current_user())
 
 
 @bp.route("/profile")
 def profile():
-    return render_template("frontend/profile.html", user=FAKE_USER, rank=FAKE_RANK)
+    return render_template("frontend/profile.html", user=get_current_user(), rank=FAKE_RANK)
+
+
+def save_lift(user, form):
+    """Check the log-lift form and save it. Returns (error message, status), or (None, None) once saved."""
+    # Form sends exercise_id, weight_lb and reps (matching lift_logs)
+    exercise_id = form.get("exercise_id", type=int)
+    if exercise_id is None or db.session.get(Exercise, exercise_id) is None:
+        return "Please choose an exercise from the list.", 400
+
+    try:
+        weight = Decimal(form.get("weight_lb", ""))
+    except InvalidOperation:
+        return "Weight must be a positive number.", 400
+    if not weight.is_finite() or weight <= 0 or weight > Decimal("999999.99"):
+        return "Weight must be a positive number no greater than 999999.99.", 400
+
+    reps = form.get("reps", type=int)
+    if reps is None or reps <= 0:
+        return "Reps must be a positive whole number.", 400
+
+    lift = LiftLog(
+        user_id=user.user_id,
+        exercise_id=exercise_id,
+        weight_lb=weight,
+        reps=reps,
+        logged_at=datetime.now(timezone.utc).replace(tzinfo=None),
+    )
+    try:
+        db.session.add(lift)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("Failed to save lift log for user %s", user.user_id)
+        return "Unable to save lift right now.", 500
+    return None, None
+
+
+def format_date(logged_at):
+    #logged_at is stored in UTC, so convert it to the server's local time before showing it
+    local = logged_at.replace(tzinfo=timezone.utc).astimezone()
+    return f"{local:%b} {local.day}"
