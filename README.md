@@ -2,17 +2,25 @@
 EloLifts is a web-app that allows users to track lifts, giving them a competitive rank to compare with their peers.
 
 # To Get Started:
-1. Install PostgreSQL and create a database named `elolifts`.
-2. Run `schema.sql`, then `seed.sql`, against that database (for example in pgAdmin's Query Tool).
-3. Add a test user, since login and registration aren't connected yet:
+1. Install PostgreSQL (keep pgAdmin 4 selected in the installer). Write down the password
+you choose for the `postgres` user, because you'll need it in step 5.
+2. Open pgAdmin 4, expand **Servers → PostgreSQL**, right-click **Databases → Create → Database...**,
+and name it `elolifts`.
+3. Run `schema.sql`, then `seed.sql`, against that database with pgAdmin: right-click `elolifts` → **Query Tool**, open the file with the
+folder icon, and press **F5**. Don't skip `seed.sql`, because the Log Lift page has no
+exercises to choose from without it.
+4. Add a test user, since login and registration aren't connected yet:
 ```sql
 INSERT INTO users (username, email) VALUES ('test', 'test@example.com');
 ```
-4. Create a `.env` file in the project folder with your connection URL, for example
+5. Create a `.env` file in the project folder with your connection URL, for example
 `DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/elolifts`.
 The app will not start without it. `.env` is gitignored, so never commit it.
-5. Download requirements: `pip install -r requirements.txt`
-6. Run `python app.py` and open the link shown in the console.
+6. Download requirements: `pip install -r requirements.txt`
+7. Run `python app.py` and open the link shown in the console.
+8. To see saved data, go to **elolifts → Schemas → public → Tables** in pgAdmin, right-click
+a table (e.g. `lift_logs`), and choose **View/Edit Data → All Rows**. Click the grid's
+refresh button after logging new lifts.
 
 # Project layout
 | File | What it does | When it runs |
