@@ -10,7 +10,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, Identity(always=True), primary_key=True)
+    user_id = db.Column(db.Integer,  primary_key=True)
     username = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
     password_hash = db.Column(db.Text)
@@ -22,7 +22,7 @@ class User(db.Model):
 class Exercise(db.Model):
     __tablename__ = "exercises"
 
-    exercise_id = db.Column(db.Integer, Identity(always=True), primary_key=True)
+    exercise_id = db.Column(db.Integer, primary_key=True)
     exercise_name = db.Column(db.String(100), unique=True)
     measurement = db.Column(db.Text, default="weight_reps")
 
@@ -30,7 +30,7 @@ class Exercise(db.Model):
 class LiftLog(db.Model):
     __tablename__ = "lift_logs"
 
-    log_id = db.Column(db.Integer, Identity(always=True), primary_key=True)
+    log_id = db.Column(db.Integer,  primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     exercise_id = db.Column(db.Integer, db.ForeignKey("exercises.exercise_id"))
     weight_lb = db.Column(db.Numeric)
@@ -47,7 +47,7 @@ class LiftLog(db.Model):
 class Workout(db.Model):
     __tablename__ = "workouts"
 
-    id = db.Column(db.Integer, Identity(always=True), primary_key=True)
+    id = db.Column(db.Integer,  primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     name = db.Column(db.String(100))
     completed = db.Column(db.Boolean, server_default=false())
@@ -58,7 +58,7 @@ class Workout(db.Model):
 class WorkoutExercise(db.Model):
     __tablename__ = "workout_exercises"
 
-    id = db.Column(db.Integer, Identity(always=True), primary_key=True)
+    id = db.Column(db.Integer,  primary_key=True)
     workout_id = db.Column(db.Integer, db.ForeignKey("workouts.id"))
     exercise_id = db.Column(db.Integer, db.ForeignKey("exercises.exercise_id"))
     sets = db.Column(db.Integer)
