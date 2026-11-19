@@ -16,6 +16,7 @@ class User(db.Model):
     password_hash = db.Column(db.Text)
     role = db.Column(db.String(20), server_default="user")
     rank = db.Column(db.String(20), server_default="Bronze")
+    suspended = db.Column(db.Boolean, default=False)
 
 
 class Exercise(db.Model):
@@ -23,6 +24,7 @@ class Exercise(db.Model):
 
     exercise_id = db.Column(db.Integer, Identity(always=True), primary_key=True)
     exercise_name = db.Column(db.String(100), unique=True)
+    measurement = db.Column(db.Text, default="weight_reps")
 
 
 class LiftLog(db.Model):
@@ -38,6 +40,9 @@ class LiftLog(db.Model):
 
     exercise = db.relationship("Exercise")
 
+    sets = db.Column(db.Integer, default=1)
+    review_status = db.Column(db.Text, default="normal")
+
 
 class Workout(db.Model):
     __tablename__ = "workouts"
@@ -46,6 +51,8 @@ class Workout(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     name = db.Column(db.String(100))
     completed = db.Column(db.Boolean, server_default=false())
+
+    completed_at = db.Column(db.DateTime)
 
 
 class WorkoutExercise(db.Model):
@@ -57,3 +64,10 @@ class WorkoutExercise(db.Model):
     sets = db.Column(db.Integer)
     reps = db.Column(db.Integer)
     weight = db.Column(db.Integer)
+
+
+class ComparisonGroup(db.Model):
+    __tablename__ = "comparison_groups"
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), primary_key=True)
+    member_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), primary_key=True)
