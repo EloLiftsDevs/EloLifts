@@ -143,6 +143,9 @@ def serialize_lift(lift):
     }
 
 
+from frontend import bp as frontend_bp
+app.register_blueprint(frontend_bp)
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

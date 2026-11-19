@@ -1,0 +1,20 @@
+{% extends "frontend/base.html" %}
+{% block title %}Leaderboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Leaderboard <small class="text-secondary fs-6">Back Squat</small></h1>
+<div class="table-responsive">
+  <table class="table bg-white">
+    <thead><tr><th>#</th><th>Lifter</th><th>Rank</th><th class="text-end">Best 1RM</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr{% if row.username == user.username %} class="table-primary"{% endif %}>
+        <td>{{ row.position }}</td>
+        <td>{{ row.username }}{% if row.username == user.username %} <span class="badge text-bg-primary">You</span>{% endif %}</td>
+        <td>{{ row.rank }}</td>
+        <td class="text-end">{{ row.best_lb }} lb</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
