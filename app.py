@@ -30,8 +30,7 @@ def home():
     return redirect(url_for("frontend.dashboard"))
 
 
-from frontend import bp as frontend_bp
-app.register_blueprint(frontend_bp)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
