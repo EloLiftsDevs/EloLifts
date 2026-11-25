@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 #josiah
 
-from frontend import bp as frontend_bp, csrf, login_manager
+from frontend import bp as frontend_bp, login_manager
 from models import db
 
 database_url = os.getenv("DATABASE_URL")
@@ -30,11 +30,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = secret_key
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-# keep csrf tokens good for the whole session (default is they expire after an hour)
-app.config["WTF_CSRF_TIME_LIMIT"] = None
 
 db.init_app(app)
-csrf.init_app(app)
 login_manager.init_app(app)
 app.register_blueprint(frontend_bp)
 

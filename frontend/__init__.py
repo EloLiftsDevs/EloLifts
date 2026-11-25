@@ -10,7 +10,6 @@ from urllib.parse import urlsplit
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_wtf.csrf import CSRFError, CSRFProtect
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import joinedload
@@ -21,10 +20,9 @@ from models import Exercise, LiftLog, User, db
 
 bp = Blueprint("frontend", __name__, template_folder="templates")
 
-# these get attached to the app in app.py
+# this gets attached to the app in app.py
 login_manager = LoginManager()
 login_manager.login_view = "frontend.login"  # @login_required sends you here if you're not logged in
-csrf = CSRFProtect()  # every POST form needs {{ csrf_token() }} or it gets rejected
 
 EMAIL_TAKEN = "An account with that email already exists."
 
@@ -41,13 +39,6 @@ def load_user(user_id):
     # returning None for suspended users logs them out next time they load a page
     user = db.session.get(User, int(user_id))
     return user if user is not None and user.is_active else None
-
-
-@bp.app_errorhandler(CSRFError)
-def handle_csrf_error(error):
-    # form token is missing or doesn't match the session anymore (like if cookies got cleared)
-    flash("Your form expired. Please try again.")
-    return redirect(request.url)
 
 
 def get_current_user():

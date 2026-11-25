@@ -5,7 +5,6 @@
   <div class="card-body p-4">
     <h1 class="h3 mb-3">Log a lift</h1>
     <form method="post">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="mb-3">
         <label for="exercise" class="form-label">Exercise</label>
         <select id="exercise" name="exercise_id" class="form-select" required>
