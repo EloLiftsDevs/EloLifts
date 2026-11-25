@@ -5,17 +5,20 @@
   <div class="card-body p-4">
     <h1 class="h3 mb-3">Create your account</h1>
     <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
-        <input id="username" name="username" class="form-control" minlength="3" maxlength="30" required>
+        <input id="username" name="username" class="form-control" minlength="3" maxlength="30" autocomplete="username"
+               value="{{ request.form.get('username', '') }}" required>
       </div>
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input id="email" name="email" type="email" class="form-control" required>
+        <input id="email" name="email" type="email" class="form-control" maxlength="100" autocomplete="email"
+               value="{{ request.form.get('email', '') }}" required>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input id="password" name="password" type="password" class="form-control" minlength="8" required>
+        <input id="password" name="password" type="password" class="form-control" minlength="8" autocomplete="new-password" required>
         <div class="form-text">At least 8 characters.</div>
       </div>
       <button class="btn btn-primary w-100">Sign up</button>

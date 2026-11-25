@@ -26,6 +26,7 @@
     </div>
   </nav>
   <main class="container pb-5">
+    {% for flashed in get_flashed_messages() %}<div class="alert alert-info">{{ flashed }}</div>{% endfor %}
     {% if message %}<div class="alert alert-info">{{ message }}</div>{% endif %}
     {% block content %}{% endblock %}
   </main>

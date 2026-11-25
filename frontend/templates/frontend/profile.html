@@ -5,15 +5,19 @@
 <div class="card mb-4">
   <div class="card-body">
     <p class="mb-1"><span class="text-secondary">Email:</span> {{ user.email }}</p>
-    <p class="mb-0"><span class="text-secondary">Overall rank:</span> {{ user.rank }} (#{{ rank.position }})</p>
+    <p class="mb-0"><span class="text-secondary">Overall rank:</span> {{ rank.rank }} (#{{ rank.position }})</p>
   </div>
 </div>
-<h2 class="h5">Ranks and personal records</h2>
+<h2 class="h5">Personal records</h2>
+<p class="text-secondary small">Best estimated one-rep max for each lift. These add up to your rank.</p>
 <ul class="list-group">
   {% for item in rank.by_exercise %}
   <li class="list-group-item d-flex justify-content-between">
-    <span>{{ item.exercise_name }} · {{ item.rank }}</span><span>{{ item.best_lb }} lb</span>
+    <span>{{ item.exercise_name }}</span><span>{{ item.best_lb|lb }} lb</span>
   </li>
   {% endfor %}
+  <li class="list-group-item d-flex justify-content-between fw-semibold">
+    <span>Big 3 total</span><span>{{ rank.total|lb }} lb</span>
+  </li>
 </ul>
 {% endblock %}

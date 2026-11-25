@@ -5,13 +5,19 @@
   <div class="card-body p-4">
     <h1 class="h3 mb-3">Log in</h1>
     <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="mb-3">
-        <label for="username" class="form-label">Username or email</label>
-        <input id="username" name="username" class="form-control" required>
+        <label for="email" class="form-label">Email</label>
+        <input id="email" name="email" type="email" class="form-control" autocomplete="email"
+               value="{{ request.form.get('email', '') }}" required autofocus>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input id="password" name="password" type="password" class="form-control" required>
+        <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+      </div>
+      <div class="form-check mb-3">
+        <input id="remember" name="remember" type="checkbox" class="form-check-input">
+        <label for="remember" class="form-check-label">Remember me</label>
       </div>
       <button class="btn btn-primary w-100">Log in</button>
     </form>

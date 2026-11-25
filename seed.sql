@@ -1,4 +1,4 @@
--- Starter data. Run after schema.sql; safe to run more than once.
+-- starter data. run this after schema.sql (it's fine to run it more than once)
 
 INSERT INTO exercises (exercise_name) VALUES
     ('Back Squat'),

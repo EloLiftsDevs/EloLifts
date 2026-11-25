@@ -6,12 +6,17 @@
 <div class="card mb-4">
   <div class="card-body">
     <p class="text-secondary mb-1">Overall rank</p>
-    <p class="h2 mb-2">{{ user.rank }} <span class="badge text-bg-secondary fs-6 align-middle">#{{ rank.position }}</span></p>
+    <p class="h2 mb-2">{{ rank.rank }} <span class="badge text-bg-secondary fs-6 align-middle">#{{ rank.position }}</span></p>
+    <p class="mb-2">Big 3 total: <strong>{{ rank.total|lb }} lb</strong></p>
+    {% if rank.next_rank %}
     <div class="progress mb-1" role="progressbar" aria-label="Progress to {{ rank.next_rank }}"
          aria-valuenow="{{ rank.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
       <div class="progress-bar" style="width: {{ rank.progress_pct }}%"></div>
     </div>
-    <small class="text-secondary">{{ rank.progress_pct }}% of the way to {{ rank.next_rank }}</small>
+    <small class="text-secondary">{{ rank.progress_pct }}% of the way to {{ rank.next_rank }} · {{ rank.lb_to_next|lb }} lb to go</small>
+    {% else %}
+    <small class="text-secondary">Top rank reached.</small>
+    {% endif %}
   </div>
 </div>
 

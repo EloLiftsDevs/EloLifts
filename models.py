@@ -1,22 +1,33 @@
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Identity, false, func
 
 db = SQLAlchemy()
 
 
-# These models mirror the tables in schema.sql.
-# The tables are created by running schema.sql against the database, not by the app.
+# these match the tables in schema.sql
+# the app doesn't make the tables, you have to run schema.sql on the db yourself
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer,  primary_key=True)
     username = db.Column(db.String(100))
+    # always saved lowercase (normalize_email in frontend/__init__.py) so UNIQUE basically ignores case
     email = db.Column(db.String(100), unique=True)
     password_hash = db.Column(db.Text)
     role = db.Column(db.String(20), server_default="user")
     rank = db.Column(db.String(20), server_default="Bronze")
     suspended = db.Column(db.Boolean, default=False)
+
+    # flask-login looks for "id" by default but our key is user_id
+    def get_id(self):
+        return str(self.user_id)
+
+    # flask-login won't log in inactive users, so this is what blocks suspended accounts
+    @property
+    def is_active(self):
+        return not self.suspended
 
 
 class Exercise(db.Model):
@@ -35,7 +46,7 @@ class LiftLog(db.Model):
     exercise_id = db.Column(db.Integer, db.ForeignKey("exercises.exercise_id"))
     weight_lb = db.Column(db.Numeric)
     reps = db.Column(db.Integer)
-    # Plain TIMESTAMP (no timezone) in the schema, so the app always stores UTC.
+    # schema uses plain TIMESTAMP (no timezone) so we always store UTC
     logged_at = db.Column(db.DateTime, server_default=func.current_timestamp())
 
     exercise = db.relationship("Exercise")
